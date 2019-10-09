@@ -4,9 +4,6 @@ from os import system, getcwd
 import argparse
 import logging
 
-# url = 'https://github.com/yangemba/avrs-content-taker.git'
-# branch = 'ubuntu18'
-
 
 def get_project_name(url):
     first = url.split('.git')[0]
@@ -32,10 +29,16 @@ def checkout(name, work_tree) -> None:
 
 
 def execute(name, x_number):
-    file_name = os.listdir(path=str(os.getcwd()+'/'+name))[0]
-    os.system(f'cd {str(os.getcwd() + "/" + name)} && python {file_name} -x '
-              f'{x_number}')
-    pass
+    file_names_list = os.listdir(path=str(os.getcwd()+'/'+name))
+    for file_name in file_names_list:
+        if '.py' in file_name:
+            current_file = file_name
+    os.system(f'cd {str(os.getcwd() + "/" + name)} && python'
+              f' {current_file} -x {x_number}')
+
+
+def clean_work_dir(project_name):
+    os.system(f'rm -rf {project_name}')
 
 
 if __name__ == "__main__":
@@ -50,7 +53,10 @@ if __name__ == "__main__":
     x_args = args.xarg
     project_name = get_project_name(url)
     clone(url)
-    checkout(url, branch)
+    checkout(project_name, branch)
+    execute(project_name, x_args)
+    clean_work_dir(project_name)
+
 
 
 
